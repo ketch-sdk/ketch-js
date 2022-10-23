@@ -1,5 +1,5 @@
 import { KetchWrapper } from './wrapper'
-import { Loaded, Pusher } from "@ketch-sdk/ketch-types";
+import { Loaded, Pusher } from '@ketch-sdk/ketch-types'
 
 const BaseUrl = 'https://global.ketchcdn.com/web/v2'
 
@@ -22,7 +22,7 @@ export async function loadScript(organizationCode: string, propertyCode: string)
       window.semaphore.loaded = true
       resolve(new KetchWrapper(window.semaphore))
     })
-    script.addEventListener('error', (e) => {
+    script.addEventListener('error', e => {
       reject(e.error)
     })
 
