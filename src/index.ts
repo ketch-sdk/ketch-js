@@ -1,36 +1,36 @@
 import { KetchWrapper } from './wrapper'
-import { Window } from './types'
+import { Loaded, Pusher } from "@ketch-sdk/ketch-types";
 
-const RootUrl = 'https://global.ketchcdn.com/web/v2'
+const BaseUrl = 'https://global.ketchcdn.com/web/v2'
 
-export async function loadScript(window: Window | undefined, organizationCode: string, propertyCode: string): Promise<KetchWrapper | null> {
-  if (window === undefined) {
-    return null
+export async function loadScript(organizationCode: string, propertyCode: string): Promise<KetchWrapper> {
+  if (window.semaphore && window.semaphore.loaded) {
+    return new KetchWrapper(window.semaphore)
   }
 
-  if (window.Ketch?.loaded) {
-    return new KetchWrapper(window.semaphore = window.Ketch)
-  }
+  const initial: Pusher & Loaded = []
+  initial.loaded = false
 
-  if (window.semaphore?.loaded) {
-    return new KetchWrapper(window.Ketch = window.semaphore)
-  }
+  window.semaphore = window.semaphore || initial
 
-  window.semaphore = window.Ketch = (window.Ketch || window.semaphore || [])
+  return new Promise<KetchWrapper>((resolve, reject) => {
+    const script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.src = `${BaseUrl}/config/${organizationCode}/${propertyCode}/boot.js`
+    script.defer = script.async = true
+    script.addEventListener('load', () => {
+      window.semaphore.loaded = true
+      resolve(new KetchWrapper(window.semaphore))
+    })
+    script.addEventListener('error', (e) => {
+      reject(e.error)
+    })
 
-  const script = document.createElement('script')
-  script.type = 'text/javascript'
-  script.src = `${RootUrl}/config/${organizationCode}/${propertyCode}/boot.js`
-  script.defer = script.async = true
+    const headOrBody = document.head || document.body
+    if (!headOrBody) {
+      throw new Error('Expected document.body not to be null. Ketch.js requires a <body> element.')
+    }
 
-  const headOrBody = document.head || document.body;
-  if (!headOrBody) {
-    throw new Error(
-      'Expected document.body not to be null. Ketch.js requires a <body> element.'
-    );
-  }
-
-  headOrBody.appendChild(script);
-
-  return new KetchWrapper(window.Ketch)
+    headOrBody.appendChild(script)
+  })
 }

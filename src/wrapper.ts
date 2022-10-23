@@ -1,13 +1,15 @@
-import * as ketchapi from '@ketch-sdk/ketch-web-api'
-import { Pusher } from './types'
 import {
   Callback,
+  Configuration,
   Consent,
+  Environment,
   Identities,
   InvokeRightsEvent,
+  IPInfo,
   Plugin,
   PreferenceExperienceParams,
-} from '@ketch-sdk/ketch-plugin/src'
+  Pusher,
+} from '@ketch-sdk/ketch-types'
 
 type EventMap = {
   [id: string]: string
@@ -31,7 +33,7 @@ const _events: EventMap = {
  * Wraps the Ketch tag
  */
 export class KetchWrapper {
-  _semaphore: Pusher
+  private readonly _semaphore: Pusher
 
   /**
    * Creates a new KetchWrapper using the given semaphore
@@ -56,8 +58,8 @@ export class KetchWrapper {
   /**
    * Get config
    */
-  async getConfig(): Promise<ketchapi.Configuration> {
-    return new Promise<ketchapi.Configuration>((resolve, reject) => {
+  async getConfig(): Promise<Configuration> {
+    return new Promise<Configuration>((resolve, reject) => {
       this._semaphore.push(['getConfig', resolve, reject])
     })
   }
@@ -74,8 +76,8 @@ export class KetchWrapper {
   /**
    * Get environment
    */
-  async getEnvironment(): Promise<ketchapi.Environment> {
-    return new Promise<ketchapi.Environment>((resolve, reject) => {
+  async getEnvironment(): Promise<Environment> {
+    return new Promise<Environment>((resolve, reject) => {
       this._semaphore.push(['getEnvironment', resolve, reject])
     })
   }
@@ -83,8 +85,8 @@ export class KetchWrapper {
   /**
    * Get GeoIP
    */
-  async getGeoIP(): Promise<ketchapi.IPInfo> {
-    return new Promise<ketchapi.IPInfo>((resolve, reject) => {
+  async getGeoIP(): Promise<IPInfo> {
+    return new Promise<IPInfo>((resolve, reject) => {
       this._semaphore.push(['getGeoIP', resolve, reject])
     })
   }
@@ -180,8 +182,8 @@ export class KetchWrapper {
    *
    * @param env The environment to set
    */
-  async setEnvironment(env: ketchapi.Environment): Promise<ketchapi.Environment> {
-    return new Promise<ketchapi.Environment>((resolve, reject) => {
+  async setEnvironment(env: Environment): Promise<Environment> {
+    return new Promise<Environment>((resolve, reject) => {
       this._semaphore.push(['setEnvironment', env, resolve, reject])
     })
   }
@@ -191,8 +193,8 @@ export class KetchWrapper {
    *
    * @param geo The GeoIP information to set
    */
-  async setGeoIP(geo: ketchapi.IPInfo): Promise<ketchapi.IPInfo> {
-    return new Promise<ketchapi.IPInfo>((resolve, reject) => {
+  async setGeoIP(geo: IPInfo): Promise<IPInfo> {
+    return new Promise<IPInfo>((resolve, reject) => {
       this._semaphore.push(['setGeoIP', geo, resolve, reject])
     })
   }
