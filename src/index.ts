@@ -5,7 +5,7 @@ const BaseUrl = 'https://global.ketchcdn.com/web/v2'
 
 export async function loadScript(organizationCode: string, propertyCode: string): Promise<KetchWrapper> {
   if (window.semaphore && window.semaphore.loaded) {
-    return new KetchWrapper(window.semaphore)
+    return new KetchWrapper()
   }
 
   const initial: Pusher & Loaded = [] as any
@@ -20,7 +20,7 @@ export async function loadScript(organizationCode: string, propertyCode: string)
     script.defer = script.async = true
     script.addEventListener('load', () => {
       window.semaphore.loaded = true
-      resolve(new KetchWrapper(window.semaphore))
+      resolve(new KetchWrapper())
     })
     script.addEventListener('error', e => {
       reject(e.error)

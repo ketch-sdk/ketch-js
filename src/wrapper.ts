@@ -4,7 +4,6 @@ import {
   Consent,
   InvokeRightEvent,
   Plugin,
-  Pusher,
   ShowPreferenceOptions
 } from "@ketch-sdk/ketch-types";
 
@@ -12,17 +11,6 @@ import {
  * Wraps the Ketch tag
  */
 export class KetchWrapper {
-  private readonly _semaphore: Pusher
-
-  /**
-   * Creates a new KetchWrapper using the given semaphore
-   *
-   * @param semaphore The semaphore instance to wrap
-   */
-  constructor(semaphore: Pusher) {
-    this._semaphore = semaphore
-  }
-
   /**
    * Registers an event listener for the given event
    *
@@ -30,7 +18,7 @@ export class KetchWrapper {
    * @param callback The callback to call on the event
    */
   async on(event: string, callback: Callback): Promise<void> {
-    this._semaphore.push(['on', event, callback])
+    return this.push(['on', event, callback])
   }
 
   /**
@@ -40,7 +28,7 @@ export class KetchWrapper {
    * @param callback The callback to call on the event
    */
   async once(event: string, callback: Callback): Promise<void> {
-    this._semaphore.push(['once', event, callback])
+    return this.push(['once', event, callback])
   }
 
   /**
@@ -50,7 +38,7 @@ export class KetchWrapper {
    * @param callback The callback to call on the event
    */
   async off(event: string, callback: Callback): Promise<void> {
-    this._semaphore.push(['off', event, callback])
+    return this.push(['off', event, callback])
   }
 
   /**
@@ -59,9 +47,7 @@ export class KetchWrapper {
    * @param plugin The plugin to register
    */
   async registerPlugin(plugin: Plugin): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      this._semaphore.push(['registerPlugin', plugin, resolve, reject])
-    })
+    return this.push(['registerPlugin', plugin])
   }
 
   /**
@@ -70,18 +56,14 @@ export class KetchWrapper {
    * @param jurisdiction The jurisdiction to set
    */
   async setJurisdiction(jurisdiction: string): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      this._semaphore.push(['setJurisdiction', jurisdiction, resolve, reject])
-    })
+    return this.push(['setJurisdiction', jurisdiction])
   }
 
   /**
    * Get config
    */
   async getConfig(): Promise<Configuration> {
-    return new Promise<Configuration>((resolve, reject) => {
-      this._semaphore.push(['getConfig', resolve, reject])
-    })
+    return this.push(['getConfig'])
   }
 
   /**
@@ -90,9 +72,7 @@ export class KetchWrapper {
    * @param eventData The right event data
    */
   async invokeRight(eventData: InvokeRightEvent): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      this._semaphore.push(['invokeRight', eventData, resolve, reject])
-    })
+    return this.push(['invokeRight', eventData])
   }
 
   /**
@@ -101,17 +81,19 @@ export class KetchWrapper {
    * @param params Optional parameters for configuring the Preference experience
    */
   async showPreferenceExperience(params?: ShowPreferenceOptions): Promise<Consent> {
-    return new Promise<Consent>((resolve, reject) => {
-      this._semaphore.push(['showPreferenceExperience', params, resolve, reject])
-    })
+    return this.push(['showPreferenceExperience', params])
   }
 
   /**
    * Shows the Consent experience.
    */
   async showConsentExperience(): Promise<Consent> {
-    return new Promise<Consent>((resolve, reject) => {
-      this._semaphore.push(['showConsentExperience', resolve, reject])
+    return this.push(['showConsentExperience'])
+  }
+
+  private async push<T>(args: any[]): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      window.semaphore.push(args.concat(resolve, reject))
     })
   }
 }
