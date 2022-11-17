@@ -8,7 +8,7 @@ export async function loadScript(organizationCode: string, propertyCode: string)
     return new KetchWrapper(window.semaphore)
   }
 
-  const initial: Pusher & Loaded = []
+  const initial: Pusher & Loaded = [] as any
   initial.loaded = false
 
   window.semaphore = window.semaphore || initial
