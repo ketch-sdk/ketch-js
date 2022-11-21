@@ -28,4 +28,4 @@ jobs:
         echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" > .npmrc
         echo "@ketch-com:registry=https://npm.pkg.github.com/" >> .npmrc
         echo "always-auth=true" >> .npmrc
-    - uses: winchci/actions-node@v13
+    - uses: winchci/actions-node@v14
