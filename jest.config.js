@@ -3,7 +3,7 @@
 
 module.exports = {
   // All imported modules in your tests should be mocked automatically
-  // automock: false,
+  automock: true,
 
   // Stop running tests after `n` failures
   // bail: 0,
@@ -21,7 +21,7 @@ module.exports = {
   coverageDirectory: './test-reports/coverage',
 
   // An array of regexp pattern strings used to skip coverage collection
-  coveragePathIgnorePatterns: ['/node_modules/', 'src/lib/'],
+  coveragePathIgnorePatterns: ['/node_modules/', 'src/polyfill/'],
 
   // A list of reporter names that Jest uses when writing coverage reports
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
@@ -29,9 +29,9 @@ module.exports = {
   // An object that configures minimum threshold enforcement for coverage results
   coverageThreshold: {
     global: {
-      branches: 79,
-      functions: 80,
-      lines: 87,
+      branches: 100,
+      functions: 100,
+      lines: 100,
     },
   },
 
@@ -51,9 +51,7 @@ module.exports = {
   // globalTeardown: null,
 
   // A set of global variables that need to be available in all test environments
-  globals: {
-    _VERSION: true,
-  },
+  globals: {},
 
   // An array of directory names to be searched recursively up from the requiring module's location
   moduleDirectories: ['node_modules'],
@@ -91,7 +89,7 @@ module.exports = {
   ],
 
   // Automatically reset mock state between every test
-  resetMocks: true,
+  resetMocks: false,
 
   // Reset the module registry before running each individual test
   // resetModules: false,
@@ -106,13 +104,13 @@ module.exports = {
   rootDir: '.',
 
   // A list of paths to directories that Jest should use to search for files in
-  // roots: ['./src'],
+  roots: ['./src'],
 
   // Allows you to use a custom runner instead of Jest's default test runner
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  // setupFiles: [],
+  setupFiles: [],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   // setupFilesAfterEnv: [],
@@ -124,15 +122,13 @@ module.exports = {
   testEnvironment: 'jest-environment-jsdom',
 
   // Options that will be passed to the testEnvironment
-  // testEnvironmentOptions: {},
+  testEnvironmentOptions: {},
 
   // Adds a location field to test results
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: [
-    "**/*.(spec|test).ts"
-  ],
+  testMatch: ['**/*.(spec|test).ts'],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: ['/node_modules/'],
@@ -141,7 +137,7 @@ module.exports = {
   // testRegex: [],
 
   // This option allows the use of a custom results processor
-  // testResultsProcessor: "jest-junit",
+  testResultsProcessor: 'jest-junit',
 
   // This option allows use of a custom test runner
   // testRunner: "jasmine2",
@@ -153,15 +149,15 @@ module.exports = {
   // timers: "real",
 
   // A map from regular expressions to paths to transformers
-  // transform: null,
+  // transform: {},
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-  "transformIgnorePatterns": [
-    "node_modules/(?!@ngrx|(?!deck.gl)|ng-dynamic)"
-  ],
+  // "transformIgnorePatterns": [],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
-  // unmockedModulePathPatterns: undefined,
+  unmockedModulePathPatterns: [
+    // '@ketch-sdk/ketch-web-api'
+  ],
 
   // Indicates whether each individual test should be reported during the run
   // verbose: null,
@@ -171,4 +167,4 @@ module.exports = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
-};
+}

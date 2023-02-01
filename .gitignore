@@ -69,3 +69,4 @@ typings/
 .cache/
 test-reports/
 .npmrc
+junit.xml

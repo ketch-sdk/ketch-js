@@ -1,36 +1,30 @@
-import { KetchWrapper } from './wrapper'
-import { Loaded, Pusher } from '@ketch-sdk/ketch-types'
+import { KetchAPI } from './KetchAPI'
+import ketch from './ketch'
 
 const BaseUrl = 'https://global.ketchcdn.com/web/v2'
 
-export async function loadScript(organizationCode: string, propertyCode: string): Promise<KetchWrapper> {
+export async function loadScript(organizationCode: string, propertyCode: string): Promise<KetchAPI> {
   if (window.semaphore && window.semaphore.loaded) {
-    return new KetchWrapper(window.semaphore)
+    return new KetchAPI()
   }
 
-  const initial: Pusher & Loaded = []
-  initial.loaded = false
+  window.semaphore = window.semaphore || []
+  window.semaphore.loaded = false
+  window.ketch = window.ketch || ketch
 
-  window.semaphore = window.semaphore || initial
-
-  return new Promise<KetchWrapper>((resolve, reject) => {
+  return new Promise<KetchAPI>((resolve, reject) => {
     const script = document.createElement('script')
     script.type = 'text/javascript'
     script.src = `${BaseUrl}/config/${organizationCode}/${propertyCode}/boot.js`
     script.defer = script.async = true
     script.addEventListener('load', () => {
-      window.semaphore.loaded = true
-      resolve(new KetchWrapper(window.semaphore))
+      resolve(new KetchAPI())
     })
     script.addEventListener('error', e => {
       reject(e.error)
     })
 
-    const headOrBody = document.head || document.body
-    if (!headOrBody) {
-      throw new Error('Expected document.body not to be null. Ketch.js requires a <body> element.')
-    }
-
-    headOrBody.appendChild(script)
+    const parent = document.head || document.body
+    parent.appendChild(script)
   })
 }
