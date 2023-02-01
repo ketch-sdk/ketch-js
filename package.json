@@ -1,5 +1,5 @@
 {
-  "name": "@ketch-com/ketch-js",
+  "name": "@ketch-sdk/ketch-js",
   "version": "0.0.1",
   "description": "Ketch TypeScript/JavaScript Module for Ketch Tag",
   "main": "./dist/index.js",
