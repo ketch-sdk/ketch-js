@@ -285,33 +285,33 @@ describe('KetchAPI', () => {
     })
   })
 
-  describe('showConsentExperience', () => {
+  describe('showConsent', () => {
     it('pushes action', () => {
       const c = 'US-CA'
       expect.assertions(4)
       pushMock.mockImplementation(([fn, resolve, reject]) => {
-        expect(fn).toBe('showConsentExperience')
+        expect(fn).toBe('showConsent')
         expect(resolve).toBeDefined()
         expect(reject).toBeDefined()
         resolve(c)
       })
-      return expect(api.showConsentExperience()).resolves.toBe(c)
+      return expect(api.showConsent()).resolves.toBe(c)
     })
   })
 
-  describe('showPreferenceExperience', () => {
+  describe('showPreferences', () => {
     it('pushes action', () => {
       const c = {} as Consent
       const p = {} as ShowPreferenceOptions
       expect.assertions(5)
       pushMock.mockImplementation(([fn, params, resolve, reject]) => {
-        expect(fn).toBe('showPreferenceExperience')
+        expect(fn).toBe('showPreferences')
         expect(params).toStrictEqual(p)
         expect(resolve).toBeDefined()
         expect(reject).toBeDefined()
         resolve(c)
       })
-      return expect(api.showPreferenceExperience(p)).resolves.toStrictEqual(c)
+      return expect(api.showPreferences(p)).resolves.toStrictEqual(c)
     })
   })
 
