@@ -1,7 +1,8 @@
 import {
   Configuration,
   Consent,
-  Environment, ExperienceClosedReason,
+  Environment,
+  ExperienceClosedReason,
   Identities,
   IdentityProvider,
   InvokeRightEvent,
@@ -10,8 +11,8 @@ import {
   Plugin,
   ShowPreferenceOptions,
   StorageOriginPolicy,
-  StorageProvider
-} from "@ketch-sdk/ketch-types";
+  StorageProvider,
+} from '@ketch-sdk/ketch-types'
 
 function ketch<T = void>(fnName: string, ...args: any[]): Promise<T> {
   return new Promise<T>((resolve, reject) => {

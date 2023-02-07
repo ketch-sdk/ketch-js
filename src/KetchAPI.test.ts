@@ -3,20 +3,18 @@ import {
   Configuration,
   Consent,
   Environment,
+  ExperienceClosedReason,
   Identities,
   IdentityProvider,
   InvokeRightEvent,
   IPInfo,
-  Ketch,
   ShowPreferenceOptions,
+  StorageOriginPolicy,
   StorageProvider,
 } from '@ketch-sdk/ketch-types'
 import ketch from './ketch'
 
-const NOT_IMPLEMENTED = 'not implemented'
-
 describe('KetchAPI', () => {
-  const host = {} as Ketch
   const api = new KetchAPI()
   const pushMock = jest.fn()
 
@@ -33,16 +31,16 @@ describe('KetchAPI', () => {
     it('pushes action', () => {
       const p = async () => {}
       const c = {}
-      expect.assertions(5)
+      expect.assertions(6)
       pushMock.mockImplementation(([fn, plugin, config, resolve, reject]) => {
         expect(fn).toBe('registerPlugin')
         expect(plugin).toStrictEqual(p)
         expect(config).toStrictEqual(c)
         expect(resolve).toBeDefined()
         expect(reject).toBeDefined()
-        resolve(host, c)
+        resolve()
       })
-      return api.registerPlugin(p, c)
+      return expect(api.registerPlugin(p, c)).resolves.toBeUndefined()
     })
   })
 
@@ -50,7 +48,7 @@ describe('KetchAPI', () => {
     it('pushes action', () => {
       const n = 'foobar'
       const p = {} as IdentityProvider
-      expect.assertions(5)
+      expect.assertions(6)
       pushMock.mockImplementation(([fn, name, provider, resolve, reject]) => {
         expect(fn).toBe('registerIdentityProvider')
         expect(name).toStrictEqual(n)
@@ -59,37 +57,39 @@ describe('KetchAPI', () => {
         expect(reject).toBeDefined()
         resolve()
       })
-      return api.registerIdentityProvider(n, p)
+      return expect(api.registerIdentityProvider(n, p)).resolves.toBeUndefined()
     })
   })
 
   describe('registerStorageProvider', () => {
     it('pushes action', () => {
       const p = {} as StorageProvider
-      expect.assertions(4)
-      pushMock.mockImplementation(([fn, provider, resolve, reject]) => {
+      expect.assertions(6)
+      pushMock.mockImplementation(([fn, policy, provider, resolve, reject]) => {
         expect(fn).toBe('registerStorageProvider')
+        expect(policy).toBe(StorageOriginPolicy.CrossOrigin)
         expect(provider).toStrictEqual(p)
         expect(resolve).toBeDefined()
         expect(reject).toBeDefined()
         resolve()
       })
-      return api.registerStorageProvider(p)
+      return expect(api.registerStorageProvider(StorageOriginPolicy.CrossOrigin, p)).resolves.toBeUndefined()
     })
   })
 
   describe('emit', () => {
     it('pushes action', () => {
       const n = 'foobar'
-      expect.assertions(5)
+      expect.assertions(6)
       pushMock.mockImplementation(([fn, eventName, args, resolve, reject]) => {
         expect(fn).toBe('emit')
         expect(eventName).toStrictEqual(n)
         expect(args).toStrictEqual([123, 456])
-        expect(resolve).toBeUndefined()
-        expect(reject).toBeUndefined()
+        expect(resolve).toBeDefined()
+        expect(reject).toBeDefined()
+        resolve()
       })
-      api.emit(n, 123, 456)
+      return expect(api.emit(n, 123, 456)).resolves.toBeUndefined()
     })
   })
 
@@ -97,15 +97,16 @@ describe('KetchAPI', () => {
     it('pushes action', () => {
       const l = jest.fn()
       const n = 'foobar'
-      expect.assertions(5)
+      expect.assertions(6)
       pushMock.mockImplementation(([fn, eventName, listener, resolve, reject]) => {
         expect(fn).toBe('on')
         expect(eventName).toStrictEqual(n)
         expect(listener).toStrictEqual(l)
-        expect(resolve).toBeUndefined()
-        expect(reject).toBeUndefined()
+        expect(resolve).toBeDefined()
+        expect(reject).toBeDefined()
+        resolve()
       })
-      api.on(n, l)
+      return expect(api.on(n, l)).resolves.toBeUndefined()
     })
   })
 
@@ -113,15 +114,16 @@ describe('KetchAPI', () => {
     it('pushes action', () => {
       const l = jest.fn()
       const n = 'foobar'
-      expect.assertions(5)
+      expect.assertions(6)
       pushMock.mockImplementation(([fn, eventName, listener, resolve, reject]) => {
         expect(fn).toBe('once')
         expect(eventName).toStrictEqual(n)
         expect(listener).toStrictEqual(l)
-        expect(resolve).toBeUndefined()
-        expect(reject).toBeUndefined()
+        expect(resolve).toBeDefined()
+        expect(reject).toBeDefined()
+        resolve()
       })
-      api.once(n, l)
+      return expect(api.once(n, l)).resolves.toBeUndefined()
     })
   })
 
@@ -129,15 +131,16 @@ describe('KetchAPI', () => {
     it('pushes action', () => {
       const l = jest.fn()
       const n = 'foobar'
-      expect.assertions(5)
+      expect.assertions(6)
       pushMock.mockImplementation(([fn, eventName, listener, resolve, reject]) => {
         expect(fn).toBe('on')
         expect(eventName).toStrictEqual(n)
         expect(listener).toStrictEqual(l)
-        expect(resolve).toBeUndefined()
-        expect(reject).toBeUndefined()
+        expect(resolve).toBeDefined()
+        expect(reject).toBeDefined()
+        resolve()
       })
-      api.addListener(n, l)
+      return expect(api.addListener(n, l)).resolves.toBeUndefined()
     })
   })
 
@@ -145,15 +148,16 @@ describe('KetchAPI', () => {
     it('pushes action', () => {
       const l = jest.fn()
       const n = 'foobar'
-      expect.assertions(5)
+      expect.assertions(6)
       pushMock.mockImplementation(([fn, eventName, listener, resolve, reject]) => {
         expect(fn).toBe('off')
         expect(eventName).toStrictEqual(n)
         expect(listener).toStrictEqual(l)
-        expect(resolve).toBeUndefined()
-        expect(reject).toBeUndefined()
+        expect(resolve).toBeDefined()
+        expect(reject).toBeDefined()
+        resolve()
       })
-      api.off(n, l)
+      return expect(api.off(n, l)).resolves.toBeUndefined()
     })
   })
 
@@ -161,29 +165,31 @@ describe('KetchAPI', () => {
     it('pushes action', () => {
       const l = jest.fn()
       const n = 'foobar'
-      expect.assertions(5)
+      expect.assertions(6)
       pushMock.mockImplementation(([fn, eventName, listener, resolve, reject]) => {
         expect(fn).toBe('off')
         expect(eventName).toStrictEqual(n)
         expect(listener).toStrictEqual(l)
-        expect(resolve).toBeUndefined()
-        expect(reject).toBeUndefined()
+        expect(resolve).toBeDefined()
+        expect(reject).toBeDefined()
+        resolve()
       })
-      api.removeListener(n, l)
+      return expect(api.removeListener(n, l)).resolves.toBeUndefined()
     })
   })
 
   describe('removeAllListeners', () => {
     it('pushes action', () => {
       const n = 'foobar'
-      expect.assertions(4)
+      expect.assertions(5)
       pushMock.mockImplementation(([fn, eventName, resolve, reject]) => {
         expect(fn).toBe('removeAllListeners')
         expect(eventName).toStrictEqual(n)
-        expect(resolve).toBeUndefined()
-        expect(reject).toBeUndefined()
+        expect(resolve).toBeDefined()
+        expect(reject).toBeDefined()
+        resolve()
       })
-      api.removeAllListeners(n)
+      return expect(api.removeAllListeners(n)).resolves.toBeUndefined()
     })
   })
 
@@ -287,21 +293,19 @@ describe('KetchAPI', () => {
 
   describe('showConsent', () => {
     it('pushes action', () => {
-      const c = 'US-CA'
       expect.assertions(4)
       pushMock.mockImplementation(([fn, resolve, reject]) => {
         expect(fn).toBe('showConsent')
         expect(resolve).toBeDefined()
         expect(reject).toBeDefined()
-        resolve(c)
+        resolve()
       })
-      return expect(api.showConsent()).resolves.toBe(c)
+      return expect(api.showConsent()).resolves.toBeUndefined()
     })
   })
 
   describe('showPreferences', () => {
     it('pushes action', () => {
-      const c = {} as Consent
       const p = {} as ShowPreferenceOptions
       expect.assertions(5)
       pushMock.mockImplementation(([fn, params, resolve, reject]) => {
@@ -309,16 +313,16 @@ describe('KetchAPI', () => {
         expect(params).toStrictEqual(p)
         expect(resolve).toBeDefined()
         expect(reject).toBeDefined()
-        resolve(c)
+        resolve()
       })
-      return expect(api.showPreferences(p)).resolves.toStrictEqual(c)
+      return expect(api.showPreferences(p)).resolves.toBeUndefined()
     })
   })
 
   describe('invokeRight', () => {
     it('pushes action', () => {
       const e = {} as InvokeRightEvent
-      expect.assertions(4)
+      expect.assertions(5)
       pushMock.mockImplementation(([fn, request, resolve, reject]) => {
         expect(fn).toBe('invokeRight')
         expect(request).toStrictEqual(e)
@@ -326,31 +330,39 @@ describe('KetchAPI', () => {
         expect(reject).toBeDefined()
         resolve()
       })
-      return api.invokeRight(e)
+      return expect(api.invokeRight(e)).resolves.toBeUndefined()
     })
   })
 
   describe('experienceClosed', () => {
-    it('throws not implemented', () => {
-      return expect(api.experienceClosed()).rejects.toBe(NOT_IMPLEMENTED)
-    })
-  })
-
-  describe('hasConsent', () => {
-    it('throws not implemented', () => {
-      return expect(api.hasConsent).toThrow(NOT_IMPLEMENTED)
+    it('pushes action', () => {
+      pushMock.mockImplementation(([fn, params, resolve, reject]) => {
+        expect(fn).toBe('experienceClosed')
+        expect(params).toStrictEqual(ExperienceClosedReason.CLOSE)
+        expect(resolve).toBeDefined()
+        expect(reject).toBeDefined()
+        resolve()
+      })
+      return expect(api.experienceClosed(ExperienceClosedReason.CLOSE)).resolves.toBeUndefined()
     })
   })
 
   describe('setConsent', () => {
-    it('throws not implemented', () => {
-      return expect(api.setConsent()).rejects.toBe(NOT_IMPLEMENTED)
-    })
-  })
-
-  describe('setShowConsentExperience', () => {
-    it('throws not implemented', () => {
-      return expect(api.setShowConsentExperience()).rejects.toBe(NOT_IMPLEMENTED)
+    it('pushes action', () => {
+      pushMock.mockImplementation(([fn, consent, resolve, reject]) => {
+        expect(fn).toBe('setConsent')
+        expect(consent).toStrictEqual({
+          purposes: {},
+        })
+        expect(resolve).toBeDefined()
+        expect(reject).toBeDefined()
+        resolve()
+      })
+      return expect(
+        api.setConsent({
+          purposes: {},
+        }),
+      ).resolves.toBeUndefined()
     })
   })
 })
