@@ -25,7 +25,7 @@
     "url": "https://github.com/ketch-sdk/ketch-js/issues"
   },
   "devDependencies": {
-    "@ketch-sdk/ketch-types": "^1.6.0",
+    "@ketch-sdk/ketch-types": "^1.7.0",
     "@types/jest": "^29.4.0",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",

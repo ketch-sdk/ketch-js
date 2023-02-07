@@ -2,6 +2,7 @@ import {
   Configuration,
   Consent,
   Environment,
+  ExperienceClosedReason,
   Identities,
   IdentityProvider,
   InvokeRightEvent,
@@ -9,10 +10,15 @@ import {
   Ketch,
   Plugin,
   ShowPreferenceOptions,
+  StorageOriginPolicy,
   StorageProvider,
 } from '@ketch-sdk/ketch-types'
 
-const NOT_IMPLEMENTED = 'not implemented'
+function ketch<T = void>(fnName: string, ...args: any[]): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    window.ketch(fnName, ...args, resolve, reject)
+  })
+}
 
 /**
  * Ketch Tag API
@@ -30,9 +36,7 @@ export class KetchAPI implements Ketch {
    * @param config The configuration for the plugin
    */
   registerPlugin(plugin: Plugin, config?: any): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      window.ketch('registerPlugin', plugin, config, resolve, reject)
-    })
+    return ketch('registerPlugin', plugin, config)
   }
 
   /**
@@ -42,20 +46,17 @@ export class KetchAPI implements Ketch {
    * @param provider The provider
    */
   registerIdentityProvider(name: string, provider: IdentityProvider): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      window.ketch('registerIdentityProvider', name, provider, resolve, reject)
-    })
+    return ketch('registerIdentityProvider', name, provider)
   }
 
   /**
    * Registers a storage provider
    *
+   * @param policy The storage origin policy
    * @param provider The provider for storage
    */
-  registerStorageProvider(provider: StorageProvider): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      window.ketch('registerStorageProvider', provider, resolve, reject)
-    })
+  registerStorageProvider(policy: StorageOriginPolicy, provider: StorageProvider): Promise<void> {
+    return ketch('registerStorageProvider', policy, provider)
   }
 
   /**
@@ -63,11 +64,9 @@ export class KetchAPI implements Ketch {
    *
    * @param eventName The event
    * @param args The arguments to the event
-   * @deprecated Future version will return Promise<boolean>
    */
-  emit(eventName: string | symbol, ...args: any[]): boolean {
-    window.ketch('emit', eventName, args)
-    return true
+  emit(eventName: string | symbol, ...args: any[]): Promise<void> {
+    return ketch('emit', eventName, args)
   }
 
   /**
@@ -75,11 +74,9 @@ export class KetchAPI implements Ketch {
    *
    * @param eventName The event
    * @param listener The listener to call on the event
-   * @deprecated Future version will return Promise<void>
    */
-  on(eventName: string | symbol, listener: (...args: any[]) => void): this {
-    window.ketch('on', eventName, listener)
-    return this
+  on(eventName: string | symbol, listener: (...args: any[]) => void): Promise<void> {
+    return ketch('on', eventName, listener)
   }
 
   /**
@@ -87,11 +84,9 @@ export class KetchAPI implements Ketch {
    *
    * @param eventName The event
    * @param listener The listener to call on the event
-   * @deprecated Future version will return Promise<void>
    */
-  once(eventName: string | symbol, listener: (...args: any[]) => void): this {
-    window.ketch('once', eventName, listener)
-    return this
+  once(eventName: string | symbol, listener: (...args: any[]) => void): Promise<void> {
+    return ketch('once', eventName, listener)
   }
 
   /**
@@ -99,10 +94,9 @@ export class KetchAPI implements Ketch {
    *
    * @param eventName The event
    * @param listener The listener to call on the event
-   * @deprecated Future version will return Promise<void>
    */
-  addListener(eventName: string | symbol, listener: (...args: any[]) => void): this {
-    return this.on(eventName, listener)
+  addListener(eventName: string | symbol, listener: (...args: any[]) => void): Promise<void> {
+    return ketch('on', eventName, listener)
   }
 
   /**
@@ -110,11 +104,9 @@ export class KetchAPI implements Ketch {
    *
    * @param eventName The event
    * @param listener The listener to call on the event
-   * @deprecated Future version will return Promise<void>
    */
-  off(eventName: string | symbol, listener: (...args: any[]) => void): this {
-    window.ketch('off', eventName, listener)
-    return this
+  off(eventName: string | symbol, listener: (...args: any[]) => void): Promise<void> {
+    return ketch('off', eventName, listener)
   }
 
   /**
@@ -122,108 +114,83 @@ export class KetchAPI implements Ketch {
    *
    * @param eventName The event
    * @param listener The listener to call on the event
-   * @deprecated Future version will return Promise<void>
    */
-  removeListener(eventName: string | symbol, listener: (...args: any[]) => void): this {
-    this.off(eventName, listener)
-    return this
+  removeListener(eventName: string | symbol, listener: (...args: any[]) => void): Promise<void> {
+    return ketch('off', eventName, listener)
   }
 
   /**
    * Unregisters all an event listeners (optionally just for the specified eventName).
    *
    * @param eventName The event
-   * @deprecated Future version will return Promise<void>
    */
-  removeAllListeners(eventName?: string | symbol): this {
-    window.ketch('removeAllListeners', eventName)
-    return this
+  removeAllListeners(eventName?: string | symbol): Promise<void> {
+    return ketch('removeAllListeners', eventName)
   }
 
   /**
    * Get config
    */
   getConfig(): Promise<Configuration> {
-    return new Promise<Configuration>((resolve, reject) => {
-      window.ketch('getConfig', resolve, reject)
-    })
+    return ketch('getConfig')
   }
 
   /**
    * Get consent
    */
   getConsent(): Promise<Consent> {
-    return new Promise<Consent>((resolve, reject) => {
-      window.ketch('getConsent', resolve, reject)
-    })
+    return ketch('getConsent')
   }
 
   /**
    * Get environment
    */
   getEnvironment(): Promise<Environment> {
-    return new Promise<Environment>((resolve, reject) => {
-      window.ketch('getEnvironment', resolve, reject)
-    })
+    return ketch('getEnvironment')
   }
 
   /**
    * Get GeoIP
    */
   getGeoIP(): Promise<IPInfo> {
-    return new Promise<IPInfo>((resolve, reject) => {
-      window.ketch('getGeoIP', resolve, reject)
-    })
+    return ketch('getGeoIP')
   }
 
   /**
    * Get identities
    */
   getIdentities(): Promise<Identities> {
-    return new Promise<Identities>((resolve, reject) => {
-      window.ketch('getIdentities', resolve, reject)
-    })
+    return ketch('getIdentities')
   }
 
   /**
    * Get jurisdiction
    */
   getJurisdiction(): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      window.ketch('getJurisdiction', resolve, reject)
-    })
+    return ketch('getJurisdiction')
   }
 
   /**
    * Get region information
    */
   getRegionInfo(): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      window.ketch('getRegionInfo', resolve, reject)
-    })
+    return ketch('getRegionInfo')
   }
 
   /**
    * Shows the Consent experience
-   *
-   * @deprecated Future version will return Promise<void>
    */
-  showConsentExperience(): Promise<Consent> {
-    return new Promise<Consent>((resolve, reject) => {
-      window.ketch('showConsentExperience', resolve, reject)
-    })
+  showConsent(): Promise<void> {
+    return ketch('showConsent')
   }
 
   /**
    * Shows the Preference experience.
    *
    * @param params Optional parameters for configuring the Preference experience
-   * @deprecated Future version will return Promise<void>
    */
-  showPreferenceExperience(params?: ShowPreferenceOptions): Promise<Consent> {
-    return new Promise<Consent>((resolve, reject) => {
-      window.ketch('showPreferenceExperience', params, resolve, reject)
-    })
+  showPreferences(params?: ShowPreferenceOptions): Promise<void> {
+    return ketch('showPreferences', params)
   }
 
   /**
@@ -232,36 +199,20 @@ export class KetchAPI implements Ketch {
    * @param eventData The right event data
    */
   invokeRight(eventData: InvokeRightEvent): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      window.ketch('invokeRight', eventData, resolve, reject)
-    })
+    return ketch('invokeRight', eventData)
   }
 
   /**
    * @deprecated Do not use. Not implemented
    */
-  experienceClosed(): Promise<Consent> {
-    return Promise.reject(NOT_IMPLEMENTED)
+  experienceClosed(reason: ExperienceClosedReason): Promise<void> {
+    return ketch('experienceClosed', reason)
   }
 
   /**
    * @deprecated Do not use. Not implemented
    */
-  hasConsent(): boolean {
-    throw Error(NOT_IMPLEMENTED)
-  }
-
-  /**
-   * @deprecated Do not use. Not implemented
-   */
-  setConsent(): Promise<Consent> {
-    return Promise.reject(NOT_IMPLEMENTED)
-  }
-
-  /**
-   * @deprecated Do not use. Not implemented
-   */
-  setShowConsentExperience(): Promise<void> {
-    return Promise.reject(NOT_IMPLEMENTED)
+  setConsent(consent: Consent): Promise<void> {
+    return ketch('setConsent', consent)
   }
 }
