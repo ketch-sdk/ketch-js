@@ -2,15 +2,16 @@
 
 Ketch JavaScript ES Module for the Ketch Tag
 
+## Installation
+
+```shell
+npm install --save @ketch-sdk/ketch-js
+```
+
 ## Initialization
 
 ```typescript
 import { loadScript } from '@ketch-sdk/ketch-js'
-import { Consent } from '@ketch-sdk/ketch-types'
-
-function myConsentHandler(consent: Consent) {
-  console.log(consent)
-}
 
 const api = await loadScript('myOrgCode', 'myPropertyCode')
 ```
@@ -42,6 +43,12 @@ api.emit('myEvent', 'some argument')
 ## Register an event listener
 
 ```typescript
+import { Consent } from '@ketch-sdk/ketch-types'
+
+function myConsentHandler(consent: Consent) {
+  console.log(consent)
+}
+
 api.on('consent', myConsentHandler)
 api.addListener('consent', myConsentHandler)
 ```
